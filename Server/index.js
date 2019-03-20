@@ -6,8 +6,10 @@ import mongoose from 'mongoose';
 import { User} from './Models/User'
 
 import 'dotenv/config'
+import { isMaster } from 'cluster';
 
 const app = express();
+
 
 mongoose.Promise = global.Promise;
 
@@ -32,6 +34,36 @@ app.post('/api/users/register', (req, res) => {
         })
     })
     
+})
+
+app.post('/api/users/login', (req, res)=> {
+    User.findOne({'email': req.body.email}, (err, user)=> {
+        if(!user) return res.status(404).send({
+            loginSuccess:false, 
+            message:'Auth false, email not found'
+        })
+        user.comparePassword(req.body.password)
+            .then(isMatch => {
+                if(isMatch){
+                    user.generateToken()
+                        .then(user => {
+                            res.cookie('x_auth', user.token)
+                                .status(200).send({
+                                    loginSuccess:true
+                                })
+                        })
+                        .catch(err => {
+                             res.status(400).send(err)
+                        })
+                }
+            })
+            .catch(err => {
+                return res.status(404).send({
+                    loginSuccess:false, 
+                    message:'Auth false, password not found'
+                })
+            })
+    })
 })
 
 app.listen(port, () => {
