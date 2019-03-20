@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const SALT = 10;
 
@@ -52,9 +53,30 @@ userSchema.pre('save', function(next){
             user.password = hash;
             next();
         })
-    }) : nex()
+    }) : next()
 
 })
+
+userSchema.methods.comparePassword =function (password) {
+    return new Promise((resolve, reject)=> {
+        bcrypt.compare(password,this.password, (err, isMatch)=> {
+            if(err) return reject(err);
+            resolve(isMatch);
+        })
+    })
+}
+
+userSchema.methods.generateToken = function(){
+    const user = this;
+    return new Promise( (resolve, reject) => {
+        const token =  jwt.sign(user._id.toHexString(), process.env.SECRET_KEY);
+        user.token = token;
+        user.save(function(err, user){
+                if(err) return reject(err);
+                return resolve(user)
+        })
+    })
+}
 
 const User = mongoose.model('User', userSchema);
 
