@@ -60,6 +60,10 @@ app.post('/api/products/item', auth,Admin, (req, res)=> {
     })
 })
 
+//==================================
+// GET PRODUCT BY ID
+//{{url}}/api/products/get_item_by_id?id=5b2d38027d75e2cdcb31cf04,IJIJJJ0KJ09
+//=============================
 
 app.get('/api/products/get_item_by_id',auth, (req, res)=> {
     const ids = req.query.id;
@@ -75,6 +79,30 @@ app.get('/api/products/get_item_by_id',auth, (req, res)=> {
         return res.status(200)
                 .send({product: doc})
     })
+})
+
+//=======================================
+//
+//        SORT PRODUCTS BY ODER
+//{{url}}/api/products/get_item_by_order?sortby=createdAt&order=desc&limit=100
+//
+//=================================
+
+app.use('/api/products/get_items_by_order', (req, res)=> {
+    const sortBy = req.query.sortby ? req.query.sortby : 'createdAt';
+    const order = req.query.order ? req.query.order : 'desc';
+    const limit = req.query.limit ? parseInt(req.query.limit) : 100;
+
+    Product.find()
+    .populate('brand')
+    .populate('wood')
+    .sort([[sortBy, order]])
+    .limit(limit)
+    .exec((err, doc) => {
+        if(err) return res.status(404).send({message:'Not found', err});
+        return res.status(200).send({product: doc})
+    })
+
 })
 
 //
@@ -122,9 +150,7 @@ app.get('/api/users/logout', auth, (req, res) => {
     console.log('rid ', req.user._id)
     User.findOneAndUpdate({_id: req.user._id},
         {token:''}, (err, doc) => {
-            console.log('err0', err)
             if(err) return res.status(400).send({ success: false })
-            console.log('user =>', doc)
             return res.status(200)
                         .send({
                             success: true
