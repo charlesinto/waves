@@ -5,6 +5,10 @@ import mongoose from 'mongoose';
 
 import { User} from './Models/User'
 import { auth } from './Middleware/Auth';
+import { Admin } from './Middleware/Admin';
+import { Brand } from './Models/Brand';
+import { Wood } from './Models/Wood';
+import { Product } from './Models/Product';
 import 'dotenv/config'
 import { isMaster } from 'cluster';
 
@@ -22,6 +26,64 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.use(cookieParser());
+
+//
+// BRAND
+//
+app.post('/api/products/brand', auth,Admin, (req, res)=> {
+    const brand = new Brand({...req.body, createdBy:req.user._id, 
+                        DateCreated: new Date(), createdByFullName: `${req.user.name} ${req.user.lastname}` })
+    brand.save((err, doc) => {
+        if(err) return res.status(400).send({success: false})
+        res.status(200).send({success: true, brand:doc})
+    })
+})
+
+app.get('/api/products/brand', auth, Admin, (req, res) => {
+    Brand.find({}, (err, doc) => {
+        if(err) return res.status(404).send({message:'Not Found'})
+        return res.status(200).send({brands:doc})
+    })
+})
+
+
+//====================
+//   PRODUCT
+//=======================
+
+
+app.post('/api/products/item', auth,Admin, (req, res)=> {
+    const product = new Product({...req.body})
+    product.save((err, doc) => {
+        if(err) return res.status(400).send({success: false, err})
+        res.status(200).send({success: true, product:doc})
+    })
+}) 
+
+//
+// WOOD
+//
+
+
+app.post('/api/products/wood', auth,Admin, (req, res)=> {
+    const wood = new Wood({...req.body, createdBy:req.user._id, 
+                        DateCreated: new Date(), createdByFullName: `${req.user.name} ${req.user.lastname}` })
+    wood.save((err, doc) => {
+        if(err) return res.status(400).send({success: false})
+        res.status(200).send({success: true, wood:doc})
+    })
+})
+
+app.get('/api/products/wood', auth, Admin, (req, res) => {
+    Wood.find({}, (err, doc) => {
+        if(err) return res.status(404).send({message:'Not Found'})
+        return res.status(200).send({brands:doc})
+    })
+})
+
+//======
+//  USERS
+//=============
 
 app.post('/api/users/auth', auth , (req, res) => {
     const { email, name, lastname, cart, history, role} = req.user;
