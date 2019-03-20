@@ -78,6 +78,18 @@ userSchema.methods.generateToken = function(){
     })
 }
 
+ userSchema.statics.findByToken = async function(token){
+     const user = this;
+     return new Promise((resolve, reject) => {
+         jwt.verify(token, process.env.SECRET_KEY, (err, authData)=> {
+            user.findOne({'_id':authData, 'token':token}, (err, user)=> {
+                if(err) return reject(err);
+                return resolve(user);
+            })
+         })
+     })
+ }
+
 const User = mongoose.model('User', userSchema);
 
 export  {User};

@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 
 import { User} from './Models/User'
-
+import { auth } from './Middleware/Auth';
 import 'dotenv/config'
 import { isMaster } from 'cluster';
 
@@ -23,6 +23,36 @@ app.use(bodyParser.json());
 
 app.use(cookieParser());
 
+app.post('/api/users/auth', auth , (req, res) => {
+    const { email, name, lastname, cart, history, role} = req.user;
+    res.status(200).send({
+        isAdmin: role === 0 ? false : true,
+        isAuth: true,
+        user: { 
+            email,
+            name,
+            lastname,
+            role,
+            cart,
+            history
+        }
+    })
+}) 
+
+app.get('/api/users/logout', auth, (req, res) => {
+    console.log('rid ', req.user._id)
+    User.findOneAndUpdate({_id: req.user._id},
+        {token:''}, (err, doc) => {
+            console.log('err0', err)
+            if(err) return res.status(400).send({ success: false })
+            console.log('user =>', doc)
+            return res.status(200)
+                        .send({
+                            success: true
+                        })
+        })
+})
+
 app.post('/api/users/register', (req, res) => {
     const user = new User(req.body);
     user.save((err, doc) => {
@@ -34,7 +64,7 @@ app.post('/api/users/register', (req, res) => {
         })
     })
     
-})
+}) 
 
 app.post('/api/users/login', (req, res)=> {
     User.findOne({'email': req.body.email}, (err, user)=> {
