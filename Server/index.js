@@ -58,7 +58,24 @@ app.post('/api/products/item', auth,Admin, (req, res)=> {
         if(err) return res.status(400).send({success: false, err})
         res.status(200).send({success: true, product:doc})
     })
-}) 
+})
+
+
+app.get('/api/products/get_item_by_id',auth, (req, res)=> {
+    const ids = req.query.id;
+    const items = ids.split(',')
+                    .map(item => mongoose.Types.ObjectId(item))
+    Product
+    .find({'_id': {$in: items}})
+    .populate('brand')
+    .populate('wood')
+    .exec((err, doc) => {
+        if(err) return res.status(404)
+                        .send({message:'Not found', err})
+        return res.status(200)
+                .send({product: doc})
+    })
+})
 
 //
 // WOOD
