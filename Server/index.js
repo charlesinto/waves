@@ -65,7 +65,7 @@ app.post('/api/products/item', auth,Admin, (req, res)=> {
 //{{url}}/api/products/get_item_by_id?id=5b2d38027d75e2cdcb31cf04,IJIJJJ0KJ09
 //=============================
 
-app.get('/api/products/get_item_by_id',auth, (req, res)=> {
+app.get('/api/products/get_item_by_id', (req, res)=> {
     const ids = req.query.id;
     const items = ids.split(',')
                     .map(item => mongoose.Types.ObjectId(item))
@@ -180,7 +180,7 @@ app.post('/api/users/login', (req, res)=> {
         user.comparePassword(req.body.password)
             .then(isMatch => {
                 if(isMatch){
-                    user.generateToken()
+                   return user.generateToken()
                         .then(user => {
                             res.cookie('x_auth', user.token)
                                 .status(200).send({
@@ -191,6 +191,7 @@ app.post('/api/users/login', (req, res)=> {
                              res.status(400).send(err)
                         })
                 }
+                return res.status(404).send({loginSuccess: false, message: 'authentication failed'})
             })
             .catch(err => {
                 return res.status(404).send({
