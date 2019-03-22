@@ -9,8 +9,8 @@ import { Admin } from './Middleware/Admin';
 import { Brand } from './Models/Brand';
 import { Wood } from './Models/Wood';
 import { Product } from './Models/Product';
-import 'dotenv/config'
-import { isMaster } from 'cluster';
+import Auth from './Controller/Auth';
+import 'dotenv/config';
 
 const app = express();
 
@@ -65,7 +65,7 @@ app.post('/api/products/item', auth,Admin, (req, res)=> {
 //{{url}}/api/products/get_item_by_id?id=5b2d38027d75e2cdcb31cf04,IJIJJJ0KJ09
 //=============================
 
-app.get('/api/products/get_item_by_id',auth, (req, res)=> {
+app.get('/api/products/get_item_by_id', (req, res)=> {
     const ids = req.query.id;
     const items = ids.split(',')
                     .map(item => mongoose.Types.ObjectId(item))
@@ -158,48 +158,9 @@ app.get('/api/users/logout', auth, (req, res) => {
         })
 })
 
-app.post('/api/users/register', (req, res) => {
-    const user = new User(req.body);
-    user.save((err, doc) => {
-        if(err) return res.status(400)
-                .send({success:false, err})
-        res.status(200).send({
-            success: true,
-            user: doc
-        })
-    })
-    
-}) 
+app.post('/api/users/register', Auth.register) 
 
-app.post('/api/users/login', (req, res)=> {
-    User.findOne({'email': req.body.email}, (err, user)=> {
-        if(!user) return res.status(404).send({
-            loginSuccess:false, 
-            message:'Auth false, email not found'
-        })
-        user.comparePassword(req.body.password)
-            .then(isMatch => {
-                if(isMatch){
-                    user.generateToken()
-                        .then(user => {
-                            res.cookie('x_auth', user.token)
-                                .status(200).send({
-                                    loginSuccess:true
-                                })
-                        })
-                        .catch(err => {
-                             res.status(400).send(err)
-                        })
-                }
-            })
-            .catch(err => {
-                return res.status(404).send({
-                    loginSuccess:false, 
-                    message:'Auth false, password not found'
-                })
-            })
-    })
-})
+app.post('/api/users/login', Auth.login)
 
 app.listen(port, () => {
     console.log(`Server is Listening at ${port}`)
