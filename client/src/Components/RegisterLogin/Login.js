@@ -43,9 +43,6 @@ class Login extends Component {
             }
         }
     }
-    componentDidMount(){
-        console.log('prps', this.props);
-    }
     componentWillReceiveProps(nextProps){
         if(nextProps.loginSuccess){
             nextProps.history.push('/users/dashboard')
@@ -62,7 +59,6 @@ class Login extends Component {
             return this.setState({formError: true})
         }
         this.props.loginUser(dataToSubmit.record);
-        console.log('form', dataToSubmit)
     }
     updateForm(element){
         const newFormData = Helper.update(element, this.state.formdata, 'Login')
@@ -94,8 +90,7 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => {
-    const { loginSuccess } = state.auth
-    console.log('state', loginSuccess);
+    const { loginSuccess } = state.auth;
     return {
         loginSuccess
     }
