@@ -29,7 +29,13 @@ class Helper {
              error = valid ? [false, 'This field is required'] : 
             ( (/\S+@\S+\.\S+/.test(elementData.value.trim())) ? error : [false, 'Must be a valid email']);
            
-        }else{
+        }
+        else if(elementData.validation.confirm === 'password'){
+            const valid = elementData.value.trim() === '';
+             error = valid ? [false, 'This field is required'] : 
+            ( elementData.value === formdata['password'].value ? error : [false, 'passwords do not match']);
+        }
+        else{
            return elementData.value ? error : [false, 'This is Required']
         }
         return error; 
@@ -39,14 +45,15 @@ class Helper {
         let objectToSubmit = {};
         let formIsValid = null;;
         for(let key in form){
-            objectToSubmit[key] = form[key].value;
-            if(formIsValid === null){
-                formIsValid = form[key].valid;
+            if(key !== 'confirmPassword'){
+                objectToSubmit[key] = form[key].value;
+                if(formIsValid === null){
+                    formIsValid = form[key].valid;
+                }
+                else if( formIsValid){
+                    formIsValid = form[key].valid
+                }
             }
-            else if( formIsValid){
-                formIsValid = form[key].valid
-            }
-            
         }
         return { isValid: formIsValid, record: objectToSubmit }
     }

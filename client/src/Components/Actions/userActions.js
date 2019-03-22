@@ -1,6 +1,6 @@
 import { USER_SERVER } from '../Util/misc';
 import axios from 'axios';
-import { LOGIN_USER } from './types';
+import { LOGIN_USER, REGISTER_USER } from './types';
 
 const loginUser = function(record){
     console.log('record', record);
@@ -17,6 +17,21 @@ const loginUser = function(record){
     }
 }
 
+const registerUser = function(user){
+    const response = axios.post(`${USER_SERVER}/register`, user)
+                        .then(response => {console.log('response'); return response.data})
+                        .catch(error => {
+                                console.log(error.response)
+                                return error.response.data;
+                        })
+
+    return {
+        type: REGISTER_USER,
+        payload: response
+    }
+}
+
 export {
-    loginUser
+    loginUser,
+    registerUser
 }
