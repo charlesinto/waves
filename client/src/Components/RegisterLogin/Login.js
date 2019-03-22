@@ -48,7 +48,7 @@ class Login extends Component {
     }
     componentWillReceiveProps(nextProps){
         if(nextProps.loginSuccess){
-            nextProps.history.push('/user/dashboard')
+            nextProps.history.push('/users/dashboard')
         }else{
             this.setState({
                 formError: true
