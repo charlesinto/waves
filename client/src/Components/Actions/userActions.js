@@ -1,6 +1,7 @@
 import { USER_SERVER } from '../Util/misc';
 import axios from 'axios';
-import { LOGIN_USER, REGISTER_USER, AUTH_USER } from './types';
+import { LOGIN_USER, REGISTER_USER, AUTH_USER,
+    LOG_OUT_USER } from './types';
 
 const loginUser = function(record){
    const response = axios.post(`${USER_SERVER}/login`, record)
@@ -42,9 +43,21 @@ const authUser = function(){
     }
 }
 
+const logout = () => {
+    const response = axios.get(`${USER_SERVER}/logout`, {})
+                        .then(response => { return {...response.data, status:response.status}})
+                        .catch(error => {
+                                return {...error.response.data, status: error.response.status};
+                        })
+    return {
+        type: LOG_OUT_USER,
+        payload: response
+    }
+}
+
 export {
     loginUser,
     registerUser,
-    authUser
-
+    authUser,
+    logout
 }

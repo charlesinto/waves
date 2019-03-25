@@ -1,15 +1,25 @@
 import React, { Component } from 'react';
 import { Button } from '../Common'
 class Dashboard extends Component {
+    renderUserDetail(){
+        if(this.props.user.user){
+            return (
+                <div>
+                    <span>{this.props.user.user.name}</span>
+                    <span>{this.props.user.user.lastname}</span>
+                    <span>{this.props.user.user.email}</span>
+                </div>
+            )
+        }
+        return null;
+    }
     render() {
         return (
             <div>
                 <div className="user_nfo_panel">
                     <h1>User Information</h1>
                     <div>
-                        <span>Name</span>
-                        <span>Lastname</span>
-                        <span>Email</span>
+                        {this.renderUserDetail()}
                     </div>
                     <Button 
                         type="default"
