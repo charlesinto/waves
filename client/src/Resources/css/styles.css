@@ -6,7 +6,7 @@ body {
 }
 
 .container {
-    width:70%;
+    width:90%;
     margin: 0 auto;
 }
 .dashboard {
@@ -469,6 +469,7 @@ footer .business_nfo .nfo {
 .card_item_wrapper {
     flex-grow: 1;
     width: 25%;
+    min-width: 300px !important;
     padding: 0 20px;
     box-sizing: border-box;
     position: relative;
