@@ -27,6 +27,38 @@ app.use(bodyParser.json());
 
 app.use(cookieParser());
 
+app.post('/api/products/shop', (req,res) => {
+    const skip = req.body.skip ? parseInt(req.body.skip) : 0;
+    const limit = req.body.limit ? parseInt(req.body.limit) : 20;
+    const order = req.body.order ? req.body.order : 'desc';
+    const sortBy = req.body.sortBy ? req.body.sortBy : '_id';
+    const findArgs = {};
+    for (let key in req.body.filters){
+        if(req.body.filters[key].length > 0){
+            if(key === 'price'){
+                findArgs[key] = {
+                    $gte: req.body.filters[key][0],
+                    $lte: req.body.filters[key][1]
+                }
+            }else {
+                findArgs[key] = req.body.filters[key]
+            }
+        }
+    }
+    findArgs['publish'] = true;
+    Product
+        .find(findArgs)
+        .populate('wood')
+        .populate('brand')
+        .skip(skip)
+        .limit(limit)
+        .sort([[sortBy, order]])
+        .exec((err, docs) => {
+            if(err) return res.status(404).send({err});
+            res.status(200).send({product:docs, size: docs.length})
+        }) 
+})
+
 //
 // BRAND
 //
@@ -39,7 +71,7 @@ app.post('/api/products/brand', auth,Admin, (req, res)=> {
     })
 })
 
-app.get('/api/products/brand', auth, Admin, (req, res) => {
+app.get('/api/products/brand', (req, res) => {
     Brand.find({}, (err, doc) => {
         if(err) return res.status(404).send({message:'Not Found'})
         return res.status(200).send({brands:doc})
@@ -119,10 +151,10 @@ app.post('/api/products/wood', auth,Admin, (req, res)=> {
     })
 })
 
-app.get('/api/products/wood', auth, Admin, (req, res) => {
+app.get('/api/products/wood', (req, res) => {
     Wood.find({}, (err, doc) => {
         if(err) return res.status(404).send({message:'Not Found'})
-        return res.status(200).send({brands:doc})
+        return res.status(200).send({wood:doc})
     })
 })
 

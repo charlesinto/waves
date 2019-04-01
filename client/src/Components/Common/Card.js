@@ -30,11 +30,11 @@ class Card extends Component {
                             ${props.price}
                         </div>
                     </div>
-                </div>
+                
                 {
                     props.grid ?
                     <div className="description">
-                        biuuibigig
+                        {props.description}
                     </div>
                     : null
                 }
@@ -58,6 +58,8 @@ class Card extends Component {
                             style={{margin:'10px  0 0 0'}}
                         />
                     </div>
+                    
+                </div>
                 </div>
             </div>
         );
