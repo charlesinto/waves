@@ -6,6 +6,7 @@ import RegisterLogin from './RegisterLogin';
 import Register from './RegisterLogin/Register';
 import UserDashboard from './User';
 import AuthCheck from './HOC/AuthCheck';
+import Shop from "./Shop";
 import { PRIVATE, PUBLIC, AUTH_RESTRICTED} from './Actions/types';
 
 class Routes extends Component {
@@ -14,6 +15,7 @@ class Routes extends Component {
             <Layout>
                 <Switch>
                     <Route path="/" exact component={AuthCheck(Home, PUBLIC)} />
+                    <Route path="/shop" exact component={AuthCheck(Shop, PUBLIC)} />
                     <Route path="/users/dashboard" exact component={AuthCheck(UserDashboard, PRIVATE)} />
                     <Route path="/register_login" exact component={AuthCheck(RegisterLogin, AUTH_RESTRICTED)} />
                     <Route path="/register" exact component={AuthCheck(Register, AUTH_RESTRICTED)} />
