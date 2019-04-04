@@ -29,16 +29,35 @@ class FormField extends Component {
                     {this.showError()}
                  </div>
              )
+             case 'select':
+             return   formTemplate =(
+                <div><select onChange={(event) => change({event, id})} id={id}
+                         {...formdata.config} value={formdata.value}
+                        onBlur={(event) => change({event, id, blur:true})}
+                    >
+                        <option value="">Select one</option>
+                        {
+                            formdata.config.options.map((item, i) => (
+                                <option key={i} value={item.key}>{item.value}</option>
+                            ))
+                        }
+            </select> {this.showError()}</div>
+            )
             default:
                 return formTemplate
         }
     }
     render() {
-        
+        const { formdata } = this.props;
         return (
             <div>
-                {this.renderTemplate()}
-            </div>
+            {
+                formdata.showLabel ? <div className="label_inputs" style={{marginTop: '10px'
+                }}>{formdata.config.label}</div> : null
+            }
+            {this.renderTemplate()}
+            
+        </div>
         );
     }
 }

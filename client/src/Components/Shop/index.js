@@ -68,6 +68,7 @@ class Shop extends Component {
     }
     loadList(){
         const skip = this.state.skip + this.state.limit;
+        console.log('skip',skip);
         this.setState({skip}, () => this.props.getProductsToShop(
             this.state.limit,this.state.skip, this.state.filters,
             this.state.toShop

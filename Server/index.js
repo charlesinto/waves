@@ -7,10 +7,14 @@ import { User} from './Models/User'
 import { auth } from './Middleware/Auth';
 import { Admin } from './Middleware/Admin';
 import { Brand } from './Models/Brand';
+import formidable from "express-formidable";
 import { Wood } from './Models/Wood';
+import cloudinary from "cloudinary";
 import { Product } from './Models/Product';
 import Auth from './Controller/Auth';
 import 'dotenv/config';
+import { resource_types } from 'cloudinary/lib/api';
+import Helper from './Helper';
 
 const app = express();
 
@@ -26,6 +30,23 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.use(cookieParser());
+
+cloudinary.config({
+    cloud_name:process.env.CLOUD_NAME,
+    api_key:process.env.API_KEY,
+    api_secret:process.env.API_SECRET
+})
+
+app.post('/api/users/uploadimage',auth, Admin, formidable() ,async (req, res) => {
+    const uploadedImages = []; 
+    try{
+        const result = await Helper.uploadHandler(req.files);
+        res.status(200).send({files: result});
+    } catch(e){
+        throw e
+    }
+    
+})
 
 app.post('/api/products/shop', (req,res) => {
     const skip = req.body.skip ? parseInt(req.body.skip) : 0;
@@ -63,10 +84,12 @@ app.post('/api/products/shop', (req,res) => {
 // BRAND
 //
 app.post('/api/products/brand', auth,Admin, (req, res)=> {
-    const brand = new Brand({...req.body, createdBy:req.user._id, 
-                        DateCreated: new Date(), createdByFullName: `${req.user.name} ${req.user.lastname}` })
+    console.log('re, body', req.body)
+    const brand = new Brand({...req.body, createdBy:req.user._id,
+         createdByFullName: `${req.user.name} ${req.user.lastname}` })
+    console.log(brand)
     brand.save((err, doc) => {
-        if(err) return res.status(400).send({success: false})
+        if(err) return res.status(400).send({success: false});
         res.status(200).send({success: true, brand:doc})
     })
 })

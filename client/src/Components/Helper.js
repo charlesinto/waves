@@ -22,6 +22,15 @@ class Helper {
         return newFormData;
         
     }
+    static populateDropdown(formdata, values, field){
+        const newFormData = {...formdata}
+        const newDropdownArray = newFormData[field].config.options;
+        values.forEach(item => {
+            newDropdownArray.push({key:item._id, value: item.name})
+        });
+        newFormData[field].config.options = newDropdownArray;
+        return newFormData;
+    }
     static validate(elementData, formdata=[]){
         let error = [true, ''];
         if(elementData.validation.email){
@@ -57,7 +66,22 @@ class Helper {
         }
         return { isValid: formIsValid, record: objectToSubmit }
     }
-     
+     static resetForm(formdata){
+         for(let key in formdata){
+             if(key === 'images'){
+                 formdata[key].value = [];
+                 formdata[key].valid = false;
+                 formdata[key].validationMessage = '';
+             }else{
+                formdata[key].value = '';
+                formdata[key].valid = false;
+                formdata[key].touched = false;
+                formdata[key].validationMessage = '';
+             }
+            
+         }
+         return {...formdata};
+     }
 }
 
 

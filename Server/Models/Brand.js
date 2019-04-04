@@ -7,21 +7,14 @@ const brandSchema = mongoose.Schema({
         maxlenght:100,
         unique:1
     },
-    DateCreated:{
-        type: Date,
-        required: true
-    },
     createdBy:{
         type: String,
 
     },
     createdByFullName:{
         type: String
-    },
-    DateModified:{
-        type: Date
     }
-})
+}, {timestamps:true})
 
 const Brand = mongoose.model('Brand', brandSchema);
 

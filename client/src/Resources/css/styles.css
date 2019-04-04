@@ -140,7 +140,9 @@ textarea {
     margin-top: 5px;
     border: 1px solid #d1d1d1;
 }
-
+form{
+    max-width: 700px;
+}
 .form_devider {
     border-bottom: 3px solid #999592;
     margin: 40px 0px;
@@ -486,7 +488,7 @@ footer .business_nfo .nfo {
 
     height: 280px;
     background-position: center !important;
-    background-size: cover !important;
+    background-size: contain !important;
     border: 1px solid #f0f0f0;
 }
 
@@ -540,7 +542,7 @@ footer .business_nfo .nfo {
 }
 
 .card_item_wrapper.grid_bars .image {
-    max-width: 300px;
+    max-width: 250px;
     min-width: 250px;
     height: 211px;
     border: none;
@@ -808,7 +810,9 @@ footer .business_nfo .nfo {
     padding: 10px 0px;
     width: 280px;
 }
-
+.user_right{
+    overflow-x: auto;
+}
 .user_container  .user_right {
     flex-grow: 1;
     padding: 0 0 0 29px;
@@ -905,6 +909,8 @@ footer .business_nfo .nfo {
 .dropzone {
     border: 1px solid #e5e5e5;
     margin-bottom: 40px;
+    display:flex;
+    flex-wrap: wrap
 }
 
 .dropzone_box {
@@ -912,7 +918,22 @@ footer .business_nfo .nfo {
     width: 25%;
     height: 160px;
     padding: 10px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    flex-wrap: 1 1 300px;
+    max-width: 200px;
     box-sizing: border-box;
+}
+
+.dropzone_box.image{
+    display: flex;
+    flex: 1 1 300px;
+    /* height: 400px; */
+    background-size: contain;
+    margin:10px;
+    /* max-width: 300px !important; */
+    height:350px;
+    background-position: center left !important;
 }
 
 .dropzone_box  .wrap {
@@ -930,4 +951,19 @@ footer .business_nfo .nfo {
 .shop_grids {
     display:flex;
     flex-direction: row-reverse;
+}
+
+.dropzone_wrapper{
+    
+}
+
+.dropzone_image{
+    display: flex;
+    flex: 1 1 300px;
+    /* height: 400px; */
+    background-size: contain;
+    margin:10px;
+    /* max-width: 300px !important; */
+    height:350px;
+    background-position: center left !important;
 }
